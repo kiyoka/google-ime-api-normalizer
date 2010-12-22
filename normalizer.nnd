@@ -5,10 +5,16 @@
 (set! debug-print-length 1000)
 
 (define (normalizer body)
-  (if-let1 m (rxmatch #/(.+)(,\],\],\])$/ body)
-    (+ (rxmatch-substring m 1)
-       "]]]")))
-    
+  (let loop ((str body))
+    #?=str
+    (if-let1 m (rxmatch #/^(.*)(,\])(.*)$/ str)
+      (loop
+       (string-join
+        (list (rxmatch-substring m 1)
+              "]"
+              (rxmatch-substring m 3))))
+      str)))
+
 
 (with-open "./result.json"
            (lambda (f)
@@ -19,12 +25,7 @@
                        (lambda (x)
                          (x.chomp))
                        lines))))
-               (print body)
-               (print " | ")
-               (print (normalizer body)))))
-
-               
-
+               (normalizer body))))
 
 
                

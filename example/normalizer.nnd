@@ -16,7 +16,7 @@
       str)))
 
 
-(with-open "./result.json"
+(with-open "../result.json"
            (lambda (f)
              (let* ((lines (f.readlines.to_list))
                     (body

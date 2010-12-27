@@ -3,13 +3,26 @@
 
 require 'uri'
 require 'net/http'
+require 'pp'
+require 'json'
 
-Net::HTTP.version_1_2
-body = ""
-Net::HTTP.start('www.google.com', 80) {|http|
-  path = sprintf( '/transliterate?langpair=%s&text=%s', 'ja-Hira|ja', URI.encode( "へんかん" ))
-  response = http.get(path)
-  body = response.body
+def fetchJson( kana )
+  body = ""
+  Net::HTTP.version_1_2
+  Net::HTTP.start('google-ime-api-normalizer.heroku.com', 80) {|http|
+    path = sprintf( '/transliterate?langpair=%s&text=%s', 'ja-Hira|ja', URI.encode( kana ))
+    response = http.get(path)
+    body = response.body
+  }
+end
+
+[ "せれんでぃぴてぃ",
+  "しょかいきどう",
+  "たけうちかんすう",
+  "あいまいもじれつ",
+  "あいまいけんさく",
+  "かんじゃにえいと",
+  "おれおれさぎ",
+  "りあじゅう" ].each { |x|
+  pp JSON.parse( fetchJson( x ))
 }
-puts body
-

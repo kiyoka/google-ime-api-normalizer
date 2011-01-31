@@ -70,9 +70,25 @@ configure :production do
   # only be run at Heroku at boot
 end
 
-# translate
+
+# transliterate
 get '/transliterate' do
   ime = GoogleImeApi.new
   jsonStr = ime.call( params[:langpair], params[:text] )
   ime.normalize( jsonStr )
+end
+
+
+# transliterate for unit test
+get '/transliterate_test' do
+  case params[:text]
+  when '1'
+    '[["しょかいきどう", ["初回起動", "諸開基堂", "初開基堂", "しょかいきどう", "ショカイキドウ"]]]'
+  when '2'
+    '[["たけうち", ["竹内", "竹内", "武内", "タケウチ", "takeuchi"]], ["かんすう", ["関数", "関数", "館数", "巻数", "函数"]]]'
+  when '3'
+    '[["あいまい", ["曖昧", "あいまい", "アイマイ", "合舞", "愛麻衣"]], ["もじれつ", ["文字列", "もじれつ", "モジレツ"]]]'
+  else
+    '[]'
+  end
 end

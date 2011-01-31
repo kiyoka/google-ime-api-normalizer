@@ -37,8 +37,9 @@ require 'net/http'
 require 'json'
 
 class WebApi
-  def initialize( host )
+  def initialize( host, dir )
     @host = host
+    @dir  = dir
     @port = 80
   end
   
@@ -46,7 +47,7 @@ class WebApi
     body = ""
     Net::HTTP.version_1_2
     Net::HTTP.start(@host, @port) {|http|
-      path = sprintf( '/transliterate?langpair=%s&text=%s', 'ja-Hira|ja', URI.encode( kana ))
+      path = sprintf( '/%s?langpair=%s&text=%s', @dir, 'ja-Hira|ja', URI.encode( kana ))
       response = http.get(path)
       body = response.body
     }
@@ -57,7 +58,7 @@ end
 
 describe "when accessing google" do
   before do
-    @webApi = WebApi.new( 'www.google.com' )
+    @webApi = WebApi.new( 'www.google.com', 'transliterate' )
   end
 
   it "should" do
@@ -69,7 +70,21 @@ end
 
 describe "when accessing google normalizer on Heroku" do
   before do
-    @webApi = WebApi.new( 'google-ime-api-normalizer.heroku.com' )
+    @webApi = WebApi.new( 'google-ime-api-normalizer.heroku.com', 'transliterate_test' )
+  end
+
+  it "should" do
+    JSON.parse( @webApi.call( '1' )).should == [["にほんご", ["日本語", "ニホンゴ", "ニホン語", "二本後", "にほんご"]]]
+    JSON.parse( @webApi.call( '2' )).should == [["へんかん", ["変換", "返還", "偏官", "へんかん", "返簡"]]]
+    JSON.parse( @webApi.call( '3' )).should == [["へんかん", ["変換", "返還", "偏官", "へんかん", "返簡"]]]
+    JSON.parse( @webApi.call( '4' )).should == [["へんかん", ["変換", "返還", "偏官", "へんかん", "返簡"]]]
+    JSON.parse( @webApi.call( '5' )).should == [["へんかん", ["変換", "返還", "偏官", "へんかん", "返簡"]]]
+  end
+end
+
+describe "when accessing google normalizer on Heroku" do
+  before do
+    @webApi = WebApi.new( 'google-ime-api-normalizer.heroku.com', 'transliterate' )
   end
 
   it "should" do

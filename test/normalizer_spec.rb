@@ -62,42 +62,38 @@ describe "when accessing google" do
   end
 
   it "should" do
-    @webApi.call( 'にほんご' ).should == "[[\"\\u306B\\u307B\\u3093\\u3054\",[\"\\u65E5\\u672C\\u8A9E\",\"\\u30CB\\u30DB\\u30F3\\u30B4\",\"\\u30CB\\u30DB\\u30F3\\u8A9E\",\"\\u4E8C\\u672C\\u5F8C\",\"\\u306B\\u307B\\u3093\\u3054\",],],]"
-    @webApi.call( 'へんかん' ).should == "[[\"\\u3078\\u3093\\u304B\\u3093\",[\"\\u5909\\u63DB\",\"\\u8FD4\\u9084\",\"\\u504F\\u5B98\",\"\\u3078\\u3093\\u304B\\u3093\",\"\\u8FD4\\u7C21\",],],]"
+    @webApi.call( 'にほんご' ).should == "[[\"\\u306B\\u307B\\u3093\\u3054\",[\"\\u65E5\\u672C\\u8A9E\",\"\\u30CB\\u30DB\\u30F3\\u30B4\",\"\\u30CB\\u30DB\\u30F3\\u8A9E\",\"\\u306B\\u307B\\u3093\\u3054\",\"\\uFF86\\uFF8E\\uFF9D\\uFF7A\\uFF9E\",],],]"
+    @webApi.call( 'へんかん' ).should == "[[\"\\u3078\\u3093\\u304B\\u3093\",[\"\\u5909\\u63DB\",\"\\u8FD4\\u9084\",\"\\u3078\\u3093\\u304B\\u3093\",\"\\u504F\\u5B98\",\"\\u5909\\u6F22\",],],]"
   end
 end
 
 
-describe "when accessing google normalizer on Heroku" do
+describe "when accessing google normalizer(test) on Heroku" do
   before do
     @webApi = WebApi.new( 'google-ime-api-normalizer.heroku.com', 'transliterate_test' )
   end
-
   it "should" do
-    JSON.parse( @webApi.call( '1' )).should == [["にほんご", ["日本語", "ニホンゴ", "ニホン語", "二本後", "にほんご"]]]
-    JSON.parse( @webApi.call( '2' )).should == [["へんかん", ["変換", "返還", "偏官", "へんかん", "返簡"]]]
-    JSON.parse( @webApi.call( '3' )).should == [["へんかん", ["変換", "返還", "偏官", "へんかん", "返簡"]]]
-    JSON.parse( @webApi.call( '4' )).should == [["へんかん", ["変換", "返還", "偏官", "へんかん", "返簡"]]]
-    JSON.parse( @webApi.call( '5' )).should == [["へんかん", ["変換", "返還", "偏官", "へんかん", "返簡"]]]
+    JSON.parse( @webApi.call( '1' )).should == []
   end
 end
+
 
 describe "when accessing google normalizer on Heroku" do
   before do
     @webApi = WebApi.new( 'google-ime-api-normalizer.heroku.com', 'transliterate' )
   end
-
+  
   it "should" do
-    @webApi.call( 'にほんご' ).should == "[[\"\\u306B\\u307B\\u3093\\u3054\",[\"\\u65E5\\u672C\\u8A9E\",\"\\u30CB\\u30DB\\u30F3\\u30B4\",\"\\u30CB\\u30DB\\u30F3\\u8A9E\",\"\\u4E8C\\u672C\\u5F8C\",\"\\u306B\\u307B\\u3093\\u3054\"]]]"
-    JSON.parse( @webApi.call( 'にほんご' )).should == [["にほんご", ["日本語", "ニホンゴ", "ニホン語", "二本後", "にほんご"]]]
+    @webApi.call( 'にほんご' ).should == "[[\"\\u306B\\u307B\\u3093\\u3054\",[\"\\u65E5\\u672C\\u8A9E\",\"\\u30CB\\u30DB\\u30F3\\u30B4\",\"\\u30CB\\u30DB\\u30F3\\u8A9E\",\"\\u306B\\u307B\\u3093\\u3054\",\"\\uFF86\\uFF8E\\uFF9D\\uFF7A\\uFF9E\"]]]"
+    JSON.parse( @webApi.call( 'にほんご' )).should == [["にほんご", ["日本語", "ニホンゴ", "ニホン語", "にほんご", "ﾆﾎﾝｺﾞ"]]]
 
-    @webApi.call( 'へんかん' ).should == "[[\"\\u3078\\u3093\\u304B\\u3093\",[\"\\u5909\\u63DB\",\"\\u8FD4\\u9084\",\"\\u504F\\u5B98\",\"\\u3078\\u3093\\u304B\\u3093\",\"\\u8FD4\\u7C21\"]]]"
-    JSON.parse( @webApi.call( 'へんかん' )).should == [["へんかん", ["変換", "返還", "偏官", "へんかん", "返簡"]]]
+    @webApi.call( 'へんかん' ).should == "[[\"\\u3078\\u3093\\u304B\\u3093\",[\"\\u5909\\u63DB\",\"\\u8FD4\\u9084\",\"\\u3078\\u3093\\u304B\\u3093\",\"\\u504F\\u5B98\",\"\\u5909\\u6F22\"]]]"
+    JSON.parse( @webApi.call( 'へんかん' )).should == [["へんかん", ["変換", "返還", "へんかん", "偏官", "変漢"]]]
 
-    @webApi.call( 'かんじゃにえいと' ).should == "[[\"\\u304B\\u3093\\u3058\\u3083\\u306B\\u3048\\u3044\\u3068\",[\"\\u95A2\\u30B8\\u30E3\\u30CB\\u30A8\\u30A4\\u30C8\",\"\\u60A3\\u8005\\u306B\\u6804\\u3068\",\"\\u60A3\\u8005\\u306B\\u82F1\\u3068\",\"\\u60A3\\u8005\\u306B\\u30A8\\u30A4\\u30C8\",\"\\u304B\\u3093\\u3058\\u3083\\u306B\\u3048\\u3044\\u3068\"]]]"
-    JSON.parse( @webApi.call( 'かんじゃにえいと' )).should == [["かんじゃにえいと", ["関ジャニエイト", "患者に栄と", "患者に英と", "患者にエイト", "かんじゃにえいと"]]]
+    @webApi.call( 'かんじゃにえいと' ).should == "[[\"\\u304B\\u3093\\u3058\\u3083\\u306B\\u3048\\u3044\\u3068\",[\"\\u95A2\\u30B8\\u30E3\\u30CB\\u30A8\\u30A4\\u30C8\",\"\\u60A3\\u8005\\u306B\\u6804\\u3068\",\"\\u60A3\\u8005\\u306B\\u30A8\\u30A4\\u30C8\",\"\\u60A3\\u8005\\u306B\\u82F1\\u3068\",\"\\u60A3\\u8005\\u306B\\u30A8\\u30A4\\u3068\"]]]"
+    JSON.parse( @webApi.call( 'かんじゃにえいと' )).should == [["かんじゃにえいと", ["関ジャニエイト", "患者に栄と", "患者にエイト", "患者に英と", "患者にエイと"]]]
 
-    @webApi.call( 'さいみつもり' ).should == "[[\"\\u3055\\u3044\\u307F\\u3064\\u3082\\u308A\",[\"\\u518D\\u898B\\u7A4D\\u308A\",\"\\u518D\\u898B\\u7A4D\\u3082\\u308A\",\"\\u6700\\u898B\\u7A4D\\u308A\",\"\\u518D\\u898B\\u7A4D\",\"\\u3055\\u3044\\u307F\\u3064\\u3082\\u308A\"]]]"
-    JSON.parse( @webApi.call( 'さいみつもり' )).should == [["さいみつもり", ["再見積り", "再見積もり", "最見積り", "再見積", "さいみつもり"]]]
+    @webApi.call( 'さいみつもり' ).should == "[[\"\\u3055\\u3044\\u307F\\u3064\\u3082\\u308A\",[\"\\u518D\\u898B\\u7A4D\\u3082\\u308A\",\"\\u518D\\u898B\\u7A4D\\u308A\",\"\\u6700\\u898B\\u7A4D\\u3082\\u308A\",\"\\u518D\\u898B\\u7A4D\",\"\\u3055\\u3044\\u307F\\u3064\\u3082\\u308A\"]]]"
+    JSON.parse( @webApi.call( 'さいみつもり' )).should == [["さいみつもり", ["再見積もり", "再見積り", "最見積もり", "再見積", "さいみつもり"]]]
   end
 end

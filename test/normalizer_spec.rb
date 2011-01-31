@@ -73,7 +73,9 @@ describe "when accessing google normalizer(test) on Heroku" do
     @webApi = WebApi.new( 'google-ime-api-normalizer.heroku.com', 'transliterate_test' )
   end
   it "should" do
-    JSON.parse( @webApi.call( '1' )).should == []
+    JSON.parse( @webApi.call( '1' )).should == [["にほんご", ["日本語", "ニホンゴ", "ニホン語", "にほんご", "ﾆﾎﾝｺﾞ"]]]
+    JSON.parse( @webApi.call( '2' )).should == [["へんかん", ["変換", "返還", "へんかん", "偏官", "変漢"]]]
+    JSON.parse( @webApi.call( '3' )).should == []
   end
 end
 
